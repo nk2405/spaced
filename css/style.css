@@ -914,10 +914,291 @@ main{ position:relative; z-index:1; }
 /* =========================================================================
    BLOG
 ========================================================================= */
+
 .blog-card{
-  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px;
-  padding: 28px; display:flex; flex-direction:column; gap: 10px;
-  transition: transform .35s var(--ease), border-color .35s var(--ease);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 28px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  text-decoration: none;
+  color: var(--white);
+
+  overflow: hidden;
+
+  transition:
+    transform .35s var(--ease),
+    border-color .35s var(--ease),
+    box-shadow .35s var(--ease);
+}
+
+.blog-card:hover{
+  transform: translateY(-6px);
+
+  border-color:
+    rgba(77,217,192,0.5);
+
+  box-shadow:
+    0 15px 40px
+    rgba(77,217,192,0.08);
+}
+
+
+/* =========================================
+   BLOG IMAGE
+========================================= */
+
+.blog-card-image{
+  width: calc(100% + 56px);
+  height: 200px;
+
+  margin:
+    -28px
+    -28px
+    18px;
+
+  overflow: hidden;
+
+  background:
+    var(--dark-purple);
+}
+
+.blog-card-image img{
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition:
+    transform .5s var(--ease);
+}
+
+.blog-card:hover
+.blog-card-image img{
+  transform:
+    scale(1.05);
+}
+
+
+/* =========================================
+   BLOG DATE
+========================================= */
+
+.blog-card-date{
+  font-family:
+    var(--font-mono);
+
+  font-size:
+    11px;
+
+  letter-spacing:
+    1.5px;
+
+  color:
+    var(--teal);
+
+  text-transform:
+    uppercase;
+}
+
+
+/* =========================================
+   BLOG TAG
+========================================= */
+
+.blog-tag{
+  font-family:
+    var(--font-mono);
+
+  font-size:
+    11px;
+
+  letter-spacing:
+    1.5px;
+
+  color:
+    var(--teal);
+
+  text-transform:
+    uppercase;
+}
+
+
+/* =========================================
+   BLOG TITLE
+========================================= */
+
+.blog-card h3{
+  font-family:
+    var(--font-display);
+
+  font-size:
+    19px;
+
+  margin:
+    6px 0;
+}
+
+
+/* =========================================
+   BLOG DESCRIPTION
+========================================= */
+
+.blog-card p{
+  color:
+    var(--text-dim);
+
+  font-size:
+    14.5px;
+
+  line-height:
+    1.6;
+
+  margin:
+    0 0 10px;
+
+  flex:
+    1;
+}
+
+
+/* =========================================
+   BLOG LINK
+========================================= */
+
+.blog-read{
+  font-size:
+    13.5px;
+
+  font-weight:
+    600;
+
+  color:
+    var(--lavender);
+
+  transition:
+    color .25s var(--ease);
+}
+
+.blog-card:hover
+.blog-read{
+  color:
+    var(--teal);
+}
+
+
+/* =========================================
+   BLOG LOADING
+========================================= */
+
+.blog-loading{
+  grid-column:
+    1 / -1;
+
+  min-height:
+    200px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  color:
+    var(--text-dim);
+
+  font-family:
+    var(--font-mono);
+
+  font-size:
+    12px;
+
+  letter-spacing:
+    1px;
+
+  text-align:
+    center;
+}
+
+
+/* =========================================
+   BLOG ERROR
+========================================= */
+
+.blog-error{
+  grid-column:
+    1 / -1;
+
+  padding:
+    50px 20px;
+
+  text-align:
+    center;
+
+  color:
+    var(--text-dim);
+}
+
+
+/* =========================================
+   BLOG BUTTON
+========================================= */
+
+.center-cta{
+  display:
+    flex;
+
+  justify-content:
+    center;
+
+  margin-top:
+    94px;
+}
+
+
+/* =========================================
+   BLOG — MOBILE
+========================================= */
+
+@media (max-width: 560px){
+
+  .blog-card-image{
+    height:
+      180px;
+  }
+
+}
+
+/* =========================================================================
+   DYNAMIC SUBSTACK BLOG FIX
+========================================================================= */
+
+.blog-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+.blog-card-content h3 {
+  color: var(--white);
+}
+
+.blog-card-content p {
+  color: var(--text-dim);
+}
+
+.blog-card-content .blog-read {
+  margin-top: auto;
 }
 .blog-card:hover{ transform: translateY(-6px); border-color: rgba(77,217,192,0.5); }
 .blog-tag{ font-family: var(--font-mono); font-size: 11px; letter-spacing:1.5px; color: var(--teal); text-transform:uppercase; }

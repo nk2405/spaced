@@ -595,3 +595,282 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+/* =============================================================
+   SUBSTACK BLOG INTEGRATION
+============================================================== */
+
+const SUBSTACK_RSS =
+  "https://spacedorg.substack.com/feed";
+
+const BLOG_CONTAINER =
+  document.getElementById("blog-container");
+
+
+async function loadSubstackPosts() {
+
+  // Make sure the blog container exists
+  if (!BLOG_CONTAINER) {
+    return;
+  }
+
+  try {
+
+    /*
+      We use rss2json to convert
+      Substack's RSS feed into JSON
+      that JavaScript can read.
+    */
+
+    const apiURL =
+      "https://api.rss2json.com/v1/api.json?rss_url="
+      + encodeURIComponent(SUBSTACK_RSS);
+
+
+    const response =
+      await fetch(apiURL);
+
+
+    if (!response.ok) {
+      throw new Error(
+        "Could not load Substack feed."
+      );
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !data.items ||
+      data.items.length === 0
+    ) {
+
+      throw new Error(
+        "No Substack posts found."
+      );
+
+    }
+
+
+    /*
+      Get the three most recent
+      Substack posts.
+    */
+
+    const latestPosts =
+      data.items.slice(0, 3);
+
+
+    /*
+      Replace the loading message
+      with the actual blog cards.
+    */
+
+    BLOG_CONTAINER.innerHTML =
+      latestPosts
+        .map(
+          createBlogCard
+        )
+        .join("");
+
+
+  } catch (error) {
+
+    console.error(
+      "SPACED Substack Error:",
+      error
+    );
+
+
+    /*
+      If something goes wrong,
+      show a fallback link to Substack.
+    */
+
+    BLOG_CONTAINER.innerHTML = `
+
+      <div class="blog-error">
+
+        <p>
+          We couldn't load our latest stories.
+        </p>
+
+        <br>
+
+        <a
+          href="https://spacedorg.substack.com/"
+          target="_blank"
+          rel="noopener"
+          class="btn btn-primary"
+        >
+          Visit SPACED on Substack →
+        </a>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =============================================================
+   CREATE A BLOG CARD
+============================================================== */
+
+function createBlogCard(post) {
+
+  /*
+    Try to find an image
+    from the Substack post.
+  */
+
+  const image =
+    post.thumbnail ||
+    post.enclosure?.link ||
+    "";
+
+
+  /*
+    Format the publication date.
+  */
+
+  const date =
+    new Date(
+      post.pubDate
+    ).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      }
+    );
+
+
+  /*
+    Remove HTML tags from
+    the article description.
+  */
+
+  const description =
+    stripHTML(
+      post.description || ""
+    );
+
+
+  /*
+    Keep the preview short.
+  */
+
+  const shortDescription =
+    description.length > 140
+      ? description.substring(
+          0,
+          140
+        ) + "..."
+      : description;
+
+
+  return `
+
+    <a
+      class="blog-card"
+      href="${post.link}"
+      target="_blank"
+      rel="noopener"
+    >
+
+      ${
+        image
+        ? `
+          <div class="blog-card-image">
+
+            <img
+              src="${image}"
+              alt=""
+              loading="lazy"
+            >
+
+          </div>
+        `
+        : ""
+      }
+
+
+      <div class="blog-card-content">
+
+        <span class="blog-card-date">
+          ${date}
+        </span>
+
+        <h3>
+          ${escapeHTML(post.title)}
+        </h3>
+
+        <p>
+          ${escapeHTML(shortDescription)}
+        </p>
+
+        <span class="blog-read">
+          Read on Substack →
+        </span>
+
+      </div>
+
+    </a>
+
+  `;
+
+}
+
+
+/* =============================================================
+   REMOVE HTML FROM SUBSTACK DESCRIPTION
+============================================================== */
+
+function stripHTML(html) {
+
+  const temporaryElement =
+    document.createElement(
+      "div"
+    );
+
+  temporaryElement.innerHTML =
+    html;
+
+  return (
+    temporaryElement.textContent ||
+    temporaryElement.innerText ||
+    ""
+  );
+
+}
+
+
+/* =============================================================
+   ESCAPE HTML
+============================================================== */
+
+function escapeHTML(text) {
+
+  const element =
+    document.createElement(
+      "div"
+    );
+
+  element.textContent =
+    text;
+
+  return element.innerHTML;
+
+}
+
+
+/* =============================================================
+   START SUBSTACK BLOG
+============================================================== */
+
+loadSubstackPosts();
