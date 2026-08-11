@@ -510,34 +510,26 @@
       Read the latest posts or head on over to see everything.</p>
 
     <div class="cards-grid blog-grid" id="blog-container">
-   <!----
-    Substack posts will automatically
-    appear here through JavaScript.
-     -->
-
-  <div class="blog-loading">
-    <p>Loading the latest from SPACED...</p>
-  </div>
-
-</div>
-
+      <div class="blog-loading">
+        <p>Loading the latest from SPACED...</p>
+      </div>
+    </div>
     <!-- LINK TO FULL SUBSTACK -->
-
-    <div class="center-cta reveal">
-
-      <a
-        href="https://spacedorg.substack.com/"
-        target="_blank"
-        rel="noopener"
-        class="btn btn-primary"
-      >
-        Visit the Blog
-      </a>
-
+    <div class="newsletter reveal">
+      <form id="substack-form" class="custom-substack-form" action="https://spacedorg.substack.com/subscribe" method="GET" target="_blank">
+        <div class="substack-input-group">
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="Type your email" 
+            required 
+          />
+          <button type="submit" id="subscribe-btn">Subscribe</button>
+        </div>
+      </form>
     </div>
 
-  </div>
-
+  </div>  
 </section>
 
 <!-- =============================================================
@@ -624,11 +616,34 @@
           </div>
         </div>
       </a>
-    </div>  
 
+      <a class="fan-card" href="https://spacedorg.substack.com/" target="_blank" rel="noopener" style="--i:3;" data-i="3">
+        <div class="fan-card-inner">
+          <div class="fan-card-face fan-card-front">
+            <div class="fan-card-band fan-card-band-substack">
+              <svg class="fan-card-icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 8V21L12 17L19 21V8" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+                  <line x1="5" y1="5" x2="19" y2="5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  <line x1="5" y1="2" x2="19" y2="2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="fan-card-face fan-card-back">
+            <span class="fan-card-back-label">Substack</span>
+            <span class="fan-card-back-value">SPACED</span>
+            <span class="fan-card-back-cta">Open →</span>
+          </div>
+        </div>
+      </a>
+
+
+    </div>  
   </div>
 </section>
 
+<!-- =============================================================
+  FOOTER
+============================================================== -->
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">

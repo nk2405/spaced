@@ -285,323 +285,96 @@ document.addEventListener('DOMContentLoaded', () => {
   /* =======================================================================
      COMET CURSOR
   ======================================================================= */
+  const cometCanvas = document.getElementById('comet-cursor');
+  const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-  const cometCanvas =
-    document.getElementById(
-      'comet-cursor'
-    );
+  if (!isTouch && cometCanvas) {
 
-
-  const isTouch =
-    window.matchMedia(
-      '(hover: none), (pointer: coarse)'
-    ).matches;
-
-
-  if (
-    !isTouch &&
-    cometCanvas
-  ) {
-
-    const cometCtx =
-      cometCanvas.getContext(
-        '2d'
-      );
-
+    const cometCtx = cometCanvas.getContext('2d');
 
     let particles = [];
 
-
     let mouse = {
-      x:
-        window.innerWidth / 2,
-
-      y:
-        window.innerHeight / 2
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2
     };
 
-
-    let lastMouse = {
-      ...mouse
-    };
-
+    let lastMouse = { ...mouse };
 
     function resizeCometCanvas() {
-
-      cometCanvas.width =
-        window.innerWidth;
-
-      cometCanvas.height =
-        window.innerHeight;
-
+      cometCanvas.width = window.innerWidth;
+      cometCanvas.height = window.innerHeight;
     }
-
 
     resizeCometCanvas();
 
+    window.addEventListener('resize', resizeCometCanvas);
 
-    window.addEventListener(
-      'resize',
-      resizeCometCanvas
-    );
+       // --- mouse move tracking ---
+    window.addEventListener('mousemove', (e) => {
 
+      cometCanvas.style.opacity = '1';
 
-    window.addEventListener(
-      'mousemove',
-      (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
 
-        mouse.x =
-          e.clientX;
+      const dist = Math.hypot(mouse.x - lastMouse.x, mouse.y - lastMouse.y);
+      const steps = Math.min(Math.max(Math.floor(dist / 4), 1), 6);
 
-        mouse.y =
-          e.clientY;
-
-
-        const dist =
-          Math.hypot(
-            mouse.x -
-              lastMouse.x,
-
-            mouse.y -
-              lastMouse.y
-          );
-
-
-        const steps =
-          Math.min(
-            Math.max(
-              Math.floor(
-                dist / 4
-              ),
-              1
-            ),
-            6
-          );
-
-
-        for (
-          let i = 0;
-          i < steps;
-          i++
-        ) {
-
-          const t =
-            i / steps;
-
-
-          particles.push({
-
-            x:
-              lastMouse.x +
-              (
-                mouse.x -
-                lastMouse.x
-              ) *
-              t,
-
-            y:
-              lastMouse.y +
-              (
-                mouse.y -
-                lastMouse.y
-              ) *
-              t,
-
-            life: 1,
-
-            r:
-              Math.random() *
-              2 +
-              1.8
-
-          });
-
-        }
-
-
-        lastMouse = {
-          x:
-            mouse.x,
-
-          y:
-            mouse.y
-        };
-
-
-        if (
-          particles.length >
-          140
-        ) {
-
-          particles =
-            particles.slice(
-              particles.length -
-              140
-            );
-
-        }
-
+      for (let i = 0; i < steps; i++) {
+        const t = i / steps;
+        particles.push({
+          x: lastMouse.x + (mouse.x - lastMouse.x) * t,
+          y: lastMouse.y + (mouse.y - lastMouse.y) * t,
+          life: 1,
+          r: Math.random() * 2 + 1.8
+        });
       }
-    );
 
+      lastMouse = { x: mouse.x, y: mouse.y };
+
+      if (particles.length > 140) {
+        particles = particles.slice(particles.length - 140);
+      }
+
+    });
 
     function drawComet() {
 
-      cometCtx.clearRect(
-        0,
-        0,
-        cometCanvas.width,
-        cometCanvas.height
-      );
+      cometCtx.clearRect(0, 0, cometCanvas.width, cometCanvas.height);
 
-
-      // Fade particles
-
-      for (
-        let i = 0;
-        i < particles.length;
-        i++
-      ) {
-
-        const p =
-          particles[i];
-
-        p.life -=
-          0.035;
-
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].life -= 0.035;
       }
 
+      particles = particles.filter(p => p.life > 0);
 
-      particles =
-        particles.filter(
-          p =>
-            p.life >
-            0
-        );
-
-
-      // Draw trail
-
-      for (
-        const p of particles
-      ) {
-
-        const grad =
-          cometCtx.createRadialGradient(
-            p.x,
-            p.y,
-            0,
-            p.x,
-            p.y,
-            p.r *
-              4 *
-              p.life +
-              1
-          );
-
-
-        grad.addColorStop(
-          0,
-          `rgba(77,217,192,${0.55 * p.life})`
-        );
-
-
-        grad.addColorStop(
-          0.5,
-          `rgba(107,79,160,${0.28 * p.life})`
-        );
-
-
-        grad.addColorStop(
-          1,
-          'rgba(107,79,160,0)'
-        );
-
+      for (const p of particles) {
+        const grad = cometCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4 * p.life + 1);
+        grad.addColorStop(0, `rgba(77,217,192,${0.55 * p.life})`);
+        grad.addColorStop(0.5, `rgba(107,79,160,${0.28 * p.life})`);
+        grad.addColorStop(1, 'rgba(107,79,160,0)');
 
         cometCtx.beginPath();
-
-
-        cometCtx.fillStyle =
-          grad;
-
-
-        cometCtx.arc(
-          p.x,
-          p.y,
-          p.r *
-            4 *
-            p.life +
-            1,
-          0,
-          Math.PI * 2
-        );
-
-
+        cometCtx.fillStyle = grad;
+        cometCtx.arc(p.x, p.y, p.r * 4 * p.life + 1, 0, Math.PI * 2);
         cometCtx.fill();
-
       }
 
-
-      // Comet head
-
-      const headGrad =
-        cometCtx.createRadialGradient(
-          mouse.x,
-          mouse.y,
-          0,
-          mouse.x,
-          mouse.y,
-          9
-        );
-
-
-      headGrad.addColorStop(
-        0,
-        '#FFFFFF'
-      );
-
-
-      headGrad.addColorStop(
-        0.4,
-        '#4DD9C0'
-      );
-
-
-      headGrad.addColorStop(
-        1,
-        'rgba(77,217,192,0)'
-      );
-
+      const headGrad = cometCtx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 9);
+      headGrad.addColorStop(0, '#FFFFFF');
+      headGrad.addColorStop(0.4, '#4DD9C0');
+      headGrad.addColorStop(1, 'rgba(77,217,192,0)');
 
       cometCtx.beginPath();
-
-
-      cometCtx.fillStyle =
-        headGrad;
-
-
-      cometCtx.arc(
-        mouse.x,
-        mouse.y,
-        9,
-        0,
-        Math.PI * 2
-      );
-
-
+      cometCtx.fillStyle = headGrad;
+      cometCtx.arc(mouse.x, mouse.y, 9, 0, Math.PI * 2);
       cometCtx.fill();
 
-
-      requestAnimationFrame(
-        drawComet
-      );
-
+      requestAnimationFrame(drawComet);
     }
 
-
-    requestAnimationFrame(
-      drawComet
-    );
+    requestAnimationFrame(drawComet);
 
   }
 
@@ -2338,8 +2111,20 @@ document.addEventListener('DOMContentLoaded', sizeAlbumGridItems);
 
       }
     );
-
   }
+  
+  document.getElementById('substack-form').addEventListener('submit', function(e) {
+  const btn = document.getElementById('subscribe-btn');
+  const emailInput = this.querySelector('input[type="email"]');
+  
+  // Only trigger if email is valid and filled out
+  if (emailInput.value.trim() !== '') {
+    // Change button text to a checkmark and add greyed-out class
+    btn.innerHTML = '✓';
+    btn.classList.add('success-state');
+    emailInput.disabled = true;
+  }
+});
 
 }); // END DOMContentLoaded
 
