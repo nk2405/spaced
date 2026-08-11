@@ -103,6 +103,11 @@
     <a href="#about" class="scroll-cue" data-nav aria-label="Scroll to About">
       <span class="scroll-cue-line"></span> Scroll
     </a>
+        
+    <div class="hero-moon-wrap" aria-hidden="true">
+      <div class="hero-moon-circle"></div>
+    </div>
+    
   </section>
 </div>
 
@@ -201,7 +206,8 @@
       <p class="eyebrow">OUR REACH</p>
       <h3>Members across the globe</h3>
       <div class="map-wrap">
-        <canvas id="worldmap"></canvas>
+        <div id="earth-canvas-container"></div>
+        <div class="earth-tooltip" id="earth-tooltip"></div>
       </div>
     </div>
 
@@ -533,6 +539,7 @@
   </div>
 
 </section>
+
 <!-- =============================================================
   CONTACT US
 ============================================================== -->
@@ -640,5 +647,7 @@
 </main>
 <script src="js/world-map-data.js"></script>
 <script src="js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </body>
 </html>

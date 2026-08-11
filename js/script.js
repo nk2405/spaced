@@ -1161,8 +1161,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   }
 
-
-
   /* =======================================================================
      FLIP CARDS
   ======================================================================= */
@@ -1221,736 +1219,219 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* =======================================================================
-     WORLD REACH MAP
+     MEMBERS MAP
+  ======================================================================= */
+  /* =======================================================================
+     WORLD REACH MAP (3D GLOBE)
   ======================================================================= */
 
   const LOCATIONS = [
-
-    {
-      name:
-        'United Arab Emirates',
-
-      lat:
-        24.5,
-
-      lon:
-        54.4
-    },
-
-    {
-      name:
-        'Berlin',
-
-      lat:
-        52.5,
-
-      lon:
-        13.4
-    },
-
-    {
-      name:
-        'Amsterdam',
-
-      lat:
-        52.4,
-
-      lon:
-        4.9
-    },
-
-    {
-      name:
-        'England',
-
-      lat:
-        51.5,
-
-      lon:
-        -0.1
-    },
-
-    {
-      name:
-        'Mumbai',
-
-      lat:
-        19.1,
-
-      lon:
-        72.9
-    },
-
-    {
-      name:
-        'Delhi',
-
-      lat:
-        28.61,
-
-      lon:
-        77.21
-    },
-
-    {
-      name:
-        'Indore',
-
-      lat:
-        22.72,
-
-      lon:
-        78.86
-    },
-
-    {
-      name:
-        'Bangalore',
-
-      lat:
-        12.97,
-
-      lon:
-        77.59
-    },
-
-    {
-      name:
-        'Edmonton',
-
-      lat:
-        53.4,
-
-      lon:
-        -113.49
-    },
-
-    {
-      name:
-        'Singapore',
-
-      lat:
-        1.35,
-
-      lon:
-        103.8
-    }
-
+    { name: 'United Arab Emirates', lat: 24.5, lon: 54.4 },
+    { name: 'Berlin', lat: 52.5, lon: 13.4 },
+    { name: 'Amsterdam', lat: 52.4, lon: 4.9 },
+    { name: 'England', lat: 51.5, lon: -0.1 },
+    { name: 'Mumbai', lat: 19.1, lon: 72.9 },
+    { name: 'Delhi', lat: 28.61, lon: 77.21 },
+    { name: 'Indore', lat: 22.72, lon: 78.86 },
+    { name: 'Bangalore', lat: 12.97, lon: 77.59 },
+    { name: 'Edmonton', lat: 53.4, lon: -113.49 },
+    { name: 'Singapore', lat: 1.35, lon: 103.8 }
   ];
 
+  const earthContainer = document.getElementById('earth-canvas-container');
 
+  if (earthContainer && typeof THREE !== 'undefined') {
 
-  const mapCanvas =
-    document.getElementById(
-      'worldmap'
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      earthContainer.clientWidth / earthContainer.clientHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 3;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(earthContainer.clientWidth, earthContainer.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    earthContainer.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.1);
+    sunLight.position.set(5, 3, 5);
+    scene.add(sunLight);
+
+    const textureLoader = new THREE.TextureLoader();
+    const earthTexture = textureLoader.load(
+      'https://unpkg.com/three-globe@2.31.0/example/img/earth-blue-marble.jpg'
     );
 
+    const earthGeometry = new THREE.SphereGeometry(1, 64, 64);
+    const earthMaterial = new THREE.MeshStandardMaterial({
+      map: earthTexture,
+      roughness: 0.8,
+      metalness: 0.1
+    });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    scene.add(earth);
 
-  if (mapCanvas) {
+    function latLonToVector3(lat, lon, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
 
-    const mapCtx =
-      mapCanvas.getContext(
-        '2d'
-      );
+      const x = -radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.cos(phi);
+      const z = radius * Math.sin(phi) * Math.sin(theta);
 
-
-    let pinTime = 0;
-
-
-
-    function latLonToXY(
-      lat,
-      lon,
-      w,
-      h
-    ) {
-
-      const x =
-        (
-          lon +
-          180
-        ) /
-        360 *
-        w;
-
-
-      const clampedLat =
-        Math.max(
-          -75,
-          Math.min(
-            75,
-            lat
-          )
-        );
-
-
-      const latRad =
-        clampedLat *
-        Math.PI /
-        180;
-
-
-      const mercN =
-        Math.log(
-          Math.tan(
-            (
-              Math.PI /
-              4
-            ) +
-            (
-              latRad /
-              2
-            )
-          )
-        );
-
-
-      const maxMercN =
-        Math.log(
-          Math.tan(
-            (
-              Math.PI /
-              4
-            ) +
-            (
-              75 *
-              Math.PI /
-              180 /
-              2
-            )
-          )
-        );
-
-
-      const y =
-        (
-          h /
-          2
-        ) -
-        (
-          h *
-          mercN /
-          (
-            2 *
-            maxMercN
-          )
-        );
-
-
-      return {
-        x,
-        y
-      };
-
+      return new THREE.Vector3(x, y, z);
     }
 
+    const markerMeshes = [];
+    const pulseRings = [];
 
+    LOCATIONS.forEach(loc => {
+      const pos = latLonToVector3(loc.lat, loc.lon, 1.02);
+      const normal = pos.clone().normalize();
 
-    function resizeMap() {
+      const pinGeometry = new THREE.ConeGeometry(0.012, 0.04, 12);
+      const pinMaterial = new THREE.MeshStandardMaterial({
+        color: 0xE23D3D,
+        emissive: 0x8B1414,
+        emissiveIntensity: 0.4
+      });
+      const pin = new THREE.Mesh(pinGeometry, pinMaterial);
 
-      const rect =
-        mapCanvas.parentElement
-          .getBoundingClientRect();
+      pin.position.copy(pos).add(normal.clone().multiplyScalar(0.02));
+      pin.lookAt(pos.clone().add(normal));
+      pin.rotateX(Math.PI / 2);
 
+      scene.add(pin);
 
-      const targetRatio =
-        2;
+      // Invisible, larger hit area for easier hovering — this is what the raycaster targets
+      const hitAreaGeometry = new THREE.SphereGeometry(0.06, 12, 12);
+      const hitAreaMaterial = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0,
+        depthWrite: false
+      });
+      const hitArea = new THREE.Mesh(hitAreaGeometry, hitAreaMaterial);
+      hitArea.position.copy(pos).add(normal.clone().multiplyScalar(0.02));
+      hitArea.userData.name = loc.name;
+      scene.add(hitArea);
+      markerMeshes.push(hitArea);
 
+      const ringGeometry = new THREE.RingGeometry(0.015, 0.02, 24);
+      const ringMaterial = new THREE.MeshBasicMaterial({
+        color: 0xE23D3D,
+        transparent: true,
+        opacity: 0.6,
+        side: THREE.DoubleSide
+      });
+      const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+      ring.position.copy(pos);
+      ring.lookAt(pos.clone().add(normal));
+      scene.add(ring);
+      pulseRings.push(ring);
+    });
 
-      let w =
-        rect.width;
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.rotateSpeed = 0.5;
+    controls.enableZoom = false;
+    controls.enablePan = false;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.4;
+    renderer.domElement.addEventListener('pointermove', (e) => {
+    const cometMouseMoveEvent = new MouseEvent('mousemove', {
+      clientX: e.clientX,
+      clientY: e.clientY,
+      bubbles: true
+    });
+    window.dispatchEvent(cometMouseMoveEvent);
+    });
 
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    const tooltip = document.getElementById('earth-tooltip');
 
-      let h =
-        w /
-        targetRatio;
+    function onEarthMouseMove(event) {
+      const rect = earthContainer.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(markerMeshes);
 
-      if (
-        h >
-        rect.height
-      ) {
+      if (intersects.length > 0) {
+        const hit = intersects[0].object;
+        const screenPos = hit.position.clone().project(camera);
 
-        h =
-          rect.height;
+        const x = (screenPos.x * 0.5 + 0.5) * rect.width;
+        const y = (-screenPos.y * 0.5 + 0.5) * rect.height;
 
+        if (tooltip) {
+          tooltip.textContent = hit.userData.name;
+          tooltip.style.left = `${x}px`;
+          tooltip.style.top = `${y}px`;
+          tooltip.classList.add('visible');
+        }
 
-        w =
-          h *
-          targetRatio;
+        earthContainer.style.cursor = 'pointer';
+        controls.autoRotate = false;
+      } else {
+        if (tooltip) {
+          tooltip.classList.remove('visible');
+        }
 
+        earthContainer.style.cursor = 'grab';
+        controls.autoRotate = true;
       }
-
-
-      mapCanvas.width =
-        w;
-
-
-      mapCanvas.height =
-        h;
-
-
-      mapCanvas.style.width =
-        `${w}px`;
-
-
-      mapCanvas.style.height =
-        `${h}px`;
-
-
-      mapCanvas.style.position =
-        'absolute';
-
-
-      mapCanvas.style.left =
-        '50%';
-
-
-      mapCanvas.style.top =
-        '50%';
-
-
-      mapCanvas.style.transform =
-        'translate(-50%, -50%)';
-
     }
 
+    earthContainer.addEventListener('mousemove', onEarthMouseMove);
 
-
-    function drawWorldOutline(
-      w,
-      h
-    ) {
-
-      mapCtx.beginPath();
-
-
-      if (
-        typeof WORLD_POLYGONS !==
-        'undefined'
-      ) {
-
-        WORLD_POLYGONS.forEach(
-          poly => {
-
-            poly.forEach(
-              (
-                [
-                  lon,
-                  lat
-                ],
-                i
-              ) => {
-
-                const {
-                  x,
-                  y
-                } =
-                  latLonToXY(
-                    lat,
-                    lon,
-                    w,
-                    h
-                  );
-
-
-                if (
-                  i === 0
-                ) {
-
-                  mapCtx.moveTo(
-                    x,
-                    y
-                  );
-
-                } else {
-
-                  mapCtx.lineTo(
-                    x,
-                    y
-                  );
-
-                }
-
-              }
-            );
-
-          }
-        );
-
+    earthContainer.addEventListener('mouseleave', () => {
+      if (tooltip) {
+        tooltip.classList.remove('visible');
       }
+      controls.autoRotate = true;
+    });
 
+    function onEarthResize() {
+      const width = earthContainer.clientWidth;
+      const height = earthContainer.clientHeight;
 
-      mapCtx.strokeStyle =
-        'rgba(139,120,200,0.35)';
-
-
-      mapCtx.lineWidth =
-        1;
-
-
-      mapCtx.stroke();
-
-
-      mapCtx.fillStyle =
-        'rgba(139,120,200,0.06)';
-
-
-      mapCtx.fill();
-
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
     }
 
+    window.addEventListener('resize', onEarthResize);
 
+    let pulseTime = 0;
 
-    function drawMap() {
+    function animateEarth() {
+      requestAnimationFrame(animateEarth);
+      controls.update();
 
-      pinTime += 1;
+      pulseTime += 0.03;
+      const pulseScale = 1 + Math.sin(pulseTime) * 0.4;
+      const pulseOpacity = 0.6 - Math.abs(Math.sin(pulseTime)) * 0.4;
 
+      pulseRings.forEach(ring => {
+        ring.scale.set(pulseScale, pulseScale, pulseScale);
+        ring.material.opacity = pulseOpacity;
+      });
 
-      const w =
-        mapCanvas.width;
-
-
-      const h =
-        mapCanvas.height;
-
-
-      mapCtx.clearRect(
-        0,
-        0,
-        w,
-        h
-      );
-
-
-      drawWorldOutline(
-        w,
-        h
-      );
-
-
-      // Dot grid
-
-      mapCtx.fillStyle =
-        'rgba(139,120,200,0.12)';
-
-
-      const gap =
-        22;
-
-
-      for (
-        let gx = 0;
-        gx < w;
-        gx += gap
-      ) {
-
-        for (
-          let gy = 0;
-          gy < h;
-          gy += gap
-        ) {
-
-          mapCtx.beginPath();
-
-
-          mapCtx.arc(
-            gx,
-            gy,
-            1.1,
-            0,
-            Math.PI * 2
-          );
-
-
-          mapCtx.fill();
-
-        }
-
-      }
-
-
-
-      // Pins
-
-      LOCATIONS.forEach(
-        (
-          loc,
-          i
-        ) => {
-
-          const {
-            x,
-            y
-          } =
-            latLonToXY(
-              loc.lat,
-              loc.lon,
-              w,
-              h
-            );
-
-
-          const pulse =
-            (
-              Math.sin(
-                pinTime *
-                0.04 +
-                i
-              ) +
-              1
-            ) /
-            2;
-
-
-          mapCtx.beginPath();
-
-
-          mapCtx.arc(
-            x,
-            y,
-            4 +
-            pulse *
-            10,
-            0,
-            Math.PI * 2
-          );
-
-
-          mapCtx.strokeStyle =
-            `rgba(77,217,192,${0.5 - pulse * 0.4})`;
-
-
-          mapCtx.lineWidth =
-            1.4;
-
-
-          mapCtx.stroke();
-
-
-
-          mapCtx.beginPath();
-
-
-          mapCtx.arc(
-            x,
-            y,
-            3.5,
-            0,
-            Math.PI * 2
-          );
-
-
-          mapCtx.fillStyle =
-            '#4DD9C0';
-
-
-          mapCtx.shadowColor =
-            '#4DD9C0';
-
-
-          mapCtx.shadowBlur =
-            8;
-
-
-          mapCtx.fill();
-
-
-          mapCtx.shadowBlur =
-            0;
-
-        }
-      );
-
-
-      requestAnimationFrame(
-        drawMap
-      );
-
+      renderer.render(scene, camera);
     }
 
-
-
-    resizeMap();
-
-
-    requestAnimationFrame(
-      drawMap
-    );
-
-
-    window.addEventListener(
-      'resize',
-      () =>
-        setTimeout(
-          resizeMap,
-          200
-        )
-    );
-
-
-
-    // Tooltip
-
-    const mapWrap =
-      mapCanvas.parentElement;
-
-
-    const tooltip =
-      document.createElement(
-        'div'
-      );
-
-
-    tooltip.style.cssText = `
-
-      position:absolute;
-
-      pointer-events:none;
-
-      padding:5px 10px;
-
-      border-radius:8px;
-
-      background:#100E1F;
-
-      border:1px solid rgba(139,120,200,0.4);
-
-      color:#fff;
-
-      font-family:'JetBrains Mono',monospace;
-
-      font-size:12px;
-
-      transform:translate(-50%,-140%);
-
-      opacity:0;
-
-      transition:opacity .2s ease;
-
-      z-index:5;
-
-      white-space:nowrap;
-
-    `;
-
-
-    mapWrap.style.position =
-      'relative';
-
-
-    mapWrap.appendChild(
-      tooltip
-    );
-
-
-
-    mapCanvas.addEventListener(
-      'mousemove',
-      (e) => {
-
-        const rect =
-          mapCanvas.getBoundingClientRect();
-
-
-        const mx =
-          e.clientX -
-          rect.left;
-
-
-        const my =
-          e.clientY -
-          rect.top;
-
-
-        let found =
-          null;
-
-
-        for (
-          const loc of LOCATIONS
-        ) {
-
-          const {
-            x,
-            y
-          } =
-            latLonToXY(
-              loc.lat,
-              loc.lon,
-              mapCanvas.width,
-              mapCanvas.height
-            );
-
-
-          if (
-            Math.hypot(
-              mx - x,
-              my - y
-            ) <
-            14
-          ) {
-
-            found = {
-              loc,
-              x,
-              y
-            };
-
-
-            break;
-
-          }
-
-        }
-
-
-
-        if (found) {
-
-          tooltip.textContent =
-            found.loc.name;
-
-
-          tooltip.style.left =
-            `${found.x}px`;
-
-
-          tooltip.style.top =
-            `${found.y}px`;
-
-
-          tooltip.style.opacity =
-            '1';
-
-
-          mapCanvas.style.cursor =
-            'pointer';
-
-        } else {
-
-          tooltip.style.opacity =
-            '0';
-
-
-          mapCanvas.style.cursor =
-            'default';
-
-        }
-
-      }
-    );
-
-
-    mapCanvas.addEventListener(
-      'mouseleave',
-      () =>
-        tooltip.style.opacity =
-          '0'
-    );
-
+    animateEarth();
   }
-
 
 
   /* =======================================================================
@@ -2297,46 +1778,19 @@ document.addEventListener('DOMContentLoaded', sizeAlbumGridItems);
     dotSections.length
   ) {
 
-    const dotObserver =
-      new IntersectionObserver(
-        (entries) => {
-
-          entries.forEach(
-            entry => {
-
-              if (
-                entry.isIntersecting
-              ) {
-
-                const id =
-                  entry.target.getAttribute(
-                    'id'
-                  );
-
-
-                scrollDots.forEach(
-                  dot => {
-
-                    dot.classList.toggle(
-                      'active',
-                      dot.dataset.section ===
-                      id
-                    );
-
-                  }
-                );
-
-              }
-
-            }
-          );
-
-        },
-        {
-          threshold:
-            0.4
+    const dotObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          const id = entry.target.getAttribute('id');
+          scrollDots.forEach(dot => {
+            dot.classList.toggle('active', dot.dataset.section === id);
+          });
         }
-      );
+      });
+    }, {
+      threshold: 0,
+      rootMargin: '-45% 0px -45% 0px'
+    });
 
 
     dotSections.forEach(
@@ -2886,8 +2340,6 @@ document.addEventListener('DOMContentLoaded', sizeAlbumGridItems);
     );
 
   }
-
-
 
 }); // END DOMContentLoaded
 

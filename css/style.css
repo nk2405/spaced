@@ -1143,7 +1143,6 @@ main{
 
 }
 
-
 /* =========================================================================
    FLIP CARDS
 ========================================================================= */
@@ -1377,13 +1376,40 @@ main{
   overflow: hidden;
 }
 
-#worldmap{
+#earth-canvas-container{
   width: 100%;
   height: 100%;
+  cursor: grab;
+}
 
+#earth-canvas-container:active{
+  cursor: grabbing;
+}
+
+#earth-canvas-container canvas{
   display: block;
 }
 
+.earth-tooltip{
+  position: absolute;
+  pointer-events: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #100E1F;
+  border: 1px solid rgba(139,120,200,0.4);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  transform: translate(-50%, -140%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+.earth-tooltip.visible{
+  opacity: 1;
+}
 
 /* =========================================================================
    EVENTS AND SERVICES
@@ -2938,7 +2964,6 @@ body.album-popup-open #hover-zone {
 
   margin-top: 94px;
 }
-
 
 /* =========================================================================
    CONTACT — DYNAMIC COLLAPSING / EXPANDING CARDS
