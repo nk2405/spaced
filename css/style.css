@@ -1917,15 +1917,14 @@ main{
   gap: 60px;
 
   flex-wrap: wrap;
-
-  margin-bottom: 70px;
+  margin-top: 100px;
 }
 
 .founder-orb{
   position: relative;
 
-  width: 250px;
-  height: 250px;
+  width: 300px;
+  height: 300px;
 
   display: flex;
   align-items: center;

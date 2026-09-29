@@ -999,7 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ======================================================================= */
 
   const LOCATIONS = [
-    { name: 'United Arab Emirates', lat: 24.5, lon: 54.4 },
+    { name: 'Abu Dhabi', lat: 24.5, lon: 54.4 },
     { name: 'Berlin', lat: 52.5, lon: 13.4 },
     { name: 'Amsterdam', lat: 52.4, lon: 4.9 },
     { name: 'England', lat: 51.5, lon: -0.1 },
@@ -1117,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     controls.enableZoom = false;
     controls.enablePan = false;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.4;
+    controls.autoRotateSpeed = 0.2;
     renderer.domElement.addEventListener('pointermove', (e) => {
     const cometMouseMoveEvent = new MouseEvent('mousemove', {
       clientX: e.clientX,
