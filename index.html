@@ -23,7 +23,7 @@
   <a href="#about" class="scroll-dot" data-nav data-section="about" aria-label="About"></a>
   <a href="#involved" class="scroll-dot" data-nav data-section="involved" aria-label="Get Involved"></a>
   <a href="#events" class="scroll-dot" data-nav data-section="events" aria-label="Events & Services"></a>
-  <a href="#board" class="scroll-dot" data-nav data-section="board" aria-label="Founders & Board"></a>
+  <a href="#board" class="scroll-dot" data-nav data-section="board" aria-label="Founders"></a>
   <a href="#album" class="scroll-dot" data-nav data-section="album" aria-label="Album"></a>
   <a href="#blog" class="scroll-dot" data-nav data-section="blog" aria-label="Blog"></a>
   <a href="#contact" class="scroll-dot" data-nav data-section="contact" aria-label="Contact"></a>
@@ -69,7 +69,7 @@
     <li><a href="#about" data-nav><span class="nav-orbit"></span>About</a></li>
     <li><a href="#involved" data-nav class="nav-highlight"><span class="nav-orbit"></span>Get Involved</a></li>
     <li><a href="#events" data-nav><span class="nav-orbit"></span>Events &amp; Services</a></li>
-    <li><a href="#board" data-nav><span class="nav-orbit"></span>Founders &amp; Board</a></li>
+    <li><a href="#board" data-nav><span class="nav-orbit"></span>Founders</a></li>
     <li><a href="#album" data-nav><span class="nav-orbit"></span>Album</a></li>
     <li><a href="#blog" data-nav><span class="nav-orbit"></span>Blog</a></li>
     <li><a href="#contact" data-nav><span class="nav-orbit"></span>Contact</a></li>
@@ -103,6 +103,11 @@
     <a href="#about" class="scroll-cue" data-nav aria-label="Scroll to About">
       <span class="scroll-cue-line"></span> Scroll
     </a>
+        
+    <div class="hero-moon-wrap" aria-hidden="true">
+      <div class="hero-moon-circle"></div>
+    </div>
+    
   </section>
 </div>
 
@@ -201,7 +206,8 @@
       <p class="eyebrow">OUR REACH</p>
       <h3>Members across the globe</h3>
       <div class="map-wrap">
-        <canvas id="worldmap"></canvas>
+        <div id="earth-canvas-container"></div>
+        <div class="earth-tooltip" id="earth-tooltip"></div>
       </div>
     </div>
 
@@ -286,27 +292,63 @@
           <div class="timeline-item">
             <div class="timeline-dot"></div>
             <div class="timeline-card">
-              <span class="timeline-date">MAR 2023</span>
-              <h4>PLACEHOLDER</h4>
-              <p>PLACEHOLDER</p>
+              <span class="timeline-date">APR 2023</span>
+              <h4>Ideation</h4>
+              <p>The idea for SPACED is born.</p>
             </div>
           </div>
 
           <div class="timeline-item">
             <div class="timeline-dot"></div>
             <div class="timeline-card">
-              <span class="timeline-date">MAY 2024</span>
-              <h4>PLACEHOLDER</h4>
-              <p>PLACEHOLDER</p>
+              <span class="timeline-date">JUL 2023</span>
+              <h4>SPACED Instagram launches</h4>
+              <p>SPACED officially begins building its online presence and community.</p>
             </div>
           </div>
 
           <div class="timeline-item">
             <div class="timeline-dot"></div>
             <div class="timeline-card">
-              <span class="timeline-date">SEP 2024</span>
-              <h4>PLACEHOLDER</h4>
-              <p>PLACEHOLDER</p>
+              <span class="timeline-date">AUG 2023</span>
+              <h4>Al Quaa 1.0</h4>
+              <p>SPACED hosts its first-ever event, a stargazing night at Al Quaa, Abu Dhabi.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">JUN 2024</span>
+              <h4>Al Sadeem</h4>
+              <p>SPACED has an event at Al Sadeem Observatory.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">AUG 2024</span>
+              <h4>Al Quaa 2.0</h4>
+              <p>The first Al Quaa event grows into an annual SPACED experience.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">AUG 2024</span>
+              <h4>CosmoQuest</h4>
+              <p>SPACED launches CosmoQuest, an exoplanet-focused engagement challenge.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">OCT 2024</span>
+              <h4>First NASA Space Apps Team</h4>
+              <p>SPACED enters the NASA Space Apps Challenge for the first time.</p>
             </div>
           </div>
 
@@ -314,17 +356,35 @@
             <div class="timeline-dot"></div>
             <div class="timeline-card">
               <span class="timeline-date">NOV 2024</span>
-              <h4>PLACEHOLDER</h4>
-              <p>PLACEHOLDER</p>
+              <h4>Ready, Set, Uni!</h4>
+              <p>SPACED expands its focus beyond astronomy, helping students explore university and STEM opportunities.</p>
             </div>
           </div>
 
           <div class="timeline-item">
             <div class="timeline-dot"></div>
             <div class="timeline-card">
-              <span class="timeline-date">FEB 2025</span>
-              <h4>PLACEHOLDER</h4>
-              <p>PLACEHOLDER</p>
+              <span class="timeline-date">DEC 2024</span>
+              <h4>Geminids Event</h4>
+              <p>SPACED closes out the year with a Geminids meteor shower event.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">APR 2025</span>
+              <h4>SPACED Ambassadors Launch</h4>
+              <p>The Ambassador programme begins, creating a wider student network to represent and grow SPACED.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">JUN–JUL 2025</span>
+              <h4>Interstellar Mind '25</h4>
+              <p>SPACED collaborates with other organizations for the first Interstellar Mind programme.</p>
             </div>
           </div>
 
@@ -332,10 +392,65 @@
             <div class="timeline-dot"></div>
             <div class="timeline-card">
               <span class="timeline-date">JUL 2025</span>
-              <h4>PLACEHOLDER</h4>
-              <p>PLACEHOLDER</p>
+              <h4>Al Quaa 3.0</h4>
+              <p>The third edition of SPACED's flagship Al Quaa stargazing experience.</p>
             </div>
           </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">AUG 2025</span>
+              <h4>Al Quaa 4.0</h4>
+              <p>SPACED returns to Al Quaa for its fourth edition.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">AUG 2025</span>
+              <h4>First Fossil Rock Event</h4>
+              <p>SPACED expands its UAE stargazing programme to a new location at Fossil Rock for Dubai and Sharjah.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">OCT 2025</span>
+              <h4>Second NASA Space Apps Team</h4>
+              <p>SPACED returns to NASA Space Apps for its second year.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">JUL 2026</span>
+              <h4>Interstellar Mind '26</h4>
+              <p>The second edition of Interstellar Mind launches.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">AUG 2026</span>
+              <h4>Al Quaa 5.0</h4>
+              <p>The fifth edition of the Al Quaa stargazing experience.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-date">NOW</span>
+              <h4>Where SPACED Is Today</h4>
+              <p>SPACED has grown from an idea into a youth-led space-literacy initiative combining astronomy, education, outreach, stargazing and community.</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -348,33 +463,9 @@
 <section id="board" class="section board-section">
   <div class="section-inner">
     <p class="eyebrow reveal">THE TEAM</p>
-    <h2 class="section-title reveal">Founders &amp; Board Members</h2>
-    <p class="section-lede reveal">Hover a founder's ring to learn more about them.</p>
-
-    <div class="founders-hint reveal">
-      <svg class="hint-arrow hint-arrow-left" viewBox="0 0 120 70" fill="none">
-        <defs>
-          <marker id="arrowhead-left" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
-            <path d="M0,0 L10,5 L0,10 L3,5 Z" fill="white"/>
-          </marker>
-        </defs>
-        <path d="M100 15 C 70 12, 40 30, 20 55"
-              stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"
-              marker-end="url(#arrowhead-left)"/>
-      </svg>
-      <span class="hint-text">click me!</span>
-      <svg class="hint-arrow hint-arrow-right" viewBox="0 0 120 70" fill="none">
-        <defs>
-          <marker id="arrowhead-right" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
-            <path d="M0,0 L10,5 L0,10 L3,5 Z" fill="white"/>
-          </marker>
-        </defs>
-        <path d="M20 15 C 50 12, 80 30, 100 55"
-              stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"
-              marker-end="url(#arrowhead-right)"/>
-      </svg>
-    </div>
-        
+    <h2 class="section-title reveal">Founders</h2>
+    <p class="section-lede reveal">Hover over an orb to learn more.</p>
+     
     <div class="founders-grid">
       <div class="founder-orb reveal" tabindex="0" data-linkedin="https://www.linkedin.com/in/apurva-girish/">
         <div class="orb-ring"></div>
@@ -400,55 +491,110 @@
       </div>
     </div>
 
-    <!-- Scrolling row of remaining board members -->
-    <div class="marquee-wrap">
-      <div class="marquee-track" id="board-marquee">
-        <!-- EDIT ME: duplicate this block for each board member, then the script
-             will auto-duplicate the whole set once more for a seamless loop -->
-        <div class="marquee-member"><img src="assets/default.jpg" alt=""><span>#1</span></div>
-        <div class="marquee-member"><img src="assets/default.jpg" alt=""><span>#2</span></div>
-        <div class="marquee-member"><img src="assets/default.jpg" alt=""><span>#3</span></div>
-        <div class="marquee-member"><img src="assets/default.jpg" alt=""><span>#4</span></div>
-        <div class="marquee-member"><img src="assets/default.jpg" alt=""><span>#5</span></div>
-      </div>
-    </div>
   </div>
 </section>
-
 <!-- =============================================================
   ALBUM
 ============================================================== -->
 <section id="album" class="section album-section">
 
-  <div id="album-modal" class="album-modal" aria-hidden="true">
-  <div class="album-modal-backdrop" data-close-modal></div>
-  <div class="album-modal-panel">
-    <button class="album-modal-close" data-close-modal aria-label="Close gallery">&times;</button>
-    <div class="album-modal-list" id="album-modal-list"></div>
-    <div class="album-modal-viewer">
-      <img id="album-modal-image" src="" alt="">
-      <p id="album-modal-caption"></p>
-    </div>
-  </div>
-  </div>
-
   <div class="section-inner">
-    <p class="eyebrow reveal">MOMENTS</p>
-    <h2 class="section-title reveal">Album</h2>
-    <p class="section-lede reveal">Snapshots from stargazing nights, workshops, and the
-      cosmos that inspired us. <!-- EDIT ME: swap these for your own event photos --></p>
 
-    <div class="album-grid">
-      <a href="album.html?img=0" target="_blank" rel="noopener" class="album-item reveal album-tall"><img src="assets/album-pics/img1.jpg" alt="Event Photo 1"></a>
-      <a href="album.html?img=4" target="_blank" rel="noopener" class="album-item reveal album-wide"><img src="assets/album-pics/img5.jpg" alt="Event Photo 2"></a>
-      <a href="album.html?img=2" target="_blank" rel="noopener" class="album-item reveal album-square"><img src="assets/album-pics/img3.jpg" alt="Event Photo 3"></a>
-      <a href="album.html?img=3" target="_blank" rel="noopener" class="album-item reveal album-wide"><img src="assets/album-pics/img4.jpg" alt="Event Photo 4"></a>
-      <a href="album.html" target="_blank" rel="noopener" class="album-item reveal album-view-all">
-        <span>View All →</span>
-      </a>  
+    <!-- Album Introduction -->
+    <div class="album-intro">
+      <p class="eyebrow reveal">MOMENTS</p>
+
+      <h2 class="section-title reveal">
+        Memories, <span class="grad-text">in orbit.</span>
+      </h2>
+
+      <p class="section-lede reveal">
+        A collection of moments from the people, events, workshops,
+        and experiences that make SPACED what it is.
+      </p>
+    </div>
+    <!-- =========================================================
+      ALBUM PREVIEW
+      This is what visitors see initially.
+      No redirect to album.html.
+    ========================================================== -->
+
+    <div class="album-preview reveal album-preview-container">
+
+      <div class="album-preview-image album-preview-image-1 album-preview-img">
+        <img
+          src="assets/album-pics/img1.jpg"
+          alt="SPACED event memory"
+          loading="lazy"
+        >
+      </div>
+
+      <div class="album-preview-image album-preview-image-2 album-preview-img">
+        <img
+          src="assets/album-pics/img3.jpg"
+          alt="SPACED event memory"
+          loading="lazy"
+        >
+      </div>
+
+      <div class="album-preview-image album-preview-image-3 album-preview-img">
+        <img
+          src="assets/album-pics/img2.jpg"
+          alt="SPACED event memory"
+          loading="lazy"
+        >
+      </div>
+
+    </div>
+    </div>
+    <div class="album-cta reveal">
+      <button
+        id="open-memory-wall"
+        class="btn btn-primary"
+        type="button"
+        aria-expanded="false"
+        aria-controls="memory-wall"
+      >
+        Explore the Album →
+      </button>
+    </div>
+
+    <!-- =========================================================
+    ALBUM POPUP GALLERY OVERLAY
+  ========================================================== -->
+    <div id="album-popup-overlay" class="album-popup-overlay" aria-hidden="true">
+      <div class="album-popup-backdrop" id="album-popup-close-backdrop"></div>
+      
+      <div class="album-popup-panel" role="dialog" aria-modal="true" aria-label="Album Gallery">
+        <div class="image-zoom-clone-backdrop" id="image-zoom-clone-backdrop"></div>
+        <button id="album-popup-close" class="album-popup-close" type="button" aria-label="Close gallery">
+          <span></span>
+          <strong>×</strong>
+        </button>
+
+        <!-- Gallery Grid containing your images -->
+        <div class="album-popup-grid" id="album-popup-grid">
+          <div class="album-popup-item"><img src="assets/album-pics/img1.jpg" alt="Moment 1" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img2.jpg" alt="Moment 1" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img3.jpg" alt="Moment 2" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img4.jpg" alt="Moment 3" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img5.jpg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img6.jpg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img7.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img8.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img9.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img10.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img11.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img12.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img13.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img14.jpeg" alt="Moment 4" loading="lazy"></div>
+          <div class="album-popup-item"><img src="assets/album-pics/img15.JPG" alt="Moment 4" loading="lazy"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
 
 <!-- =============================================================
   BLOG
@@ -461,35 +607,28 @@
       Read the latest posts or head on over to see everything.</p>
 
     <div class="cards-grid blog-grid" id="blog-container">
-   <!----
-    Substack posts will automatically
-    appear here through JavaScript.
-     -->
-
-  <div class="blog-loading">
-    <p>Loading the latest from SPACED...</p>
-  </div>
-
-</div>
-
+      <div class="blog-loading">
+        <p>Loading the latest from SPACED...</p>
+      </div>
+    </div>
     <!-- LINK TO FULL SUBSTACK -->
-
-    <div class="center-cta reveal">
-
-      <a
-        href="https://spacedorg.substack.com/"
-        target="_blank"
-        rel="noopener"
-        class="btn btn-primary"
-      >
-        Visit the Blog
-      </a>
-
+    <div class="newsletter reveal">
+      <form id="substack-form" class="custom-substack-form" action="https://spacedorg.substack.com/subscribe" method="GET" target="_blank">
+        <div class="substack-input-group">
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="Type your email" 
+            required 
+          />
+          <button type="submit" id="subscribe-btn">Subscribe</button>
+        </div>
+      </form>
     </div>
 
-  </div>
-
+  </div>  
 </section>
+
 <!-- =============================================================
   CONTACT US
 ============================================================== -->
@@ -574,11 +713,34 @@
           </div>
         </div>
       </a>
-    </div>  
 
+      <a class="fan-card" href="https://spacedorg.substack.com/" target="_blank" rel="noopener" style="--i:3;" data-i="3">
+        <div class="fan-card-inner">
+          <div class="fan-card-face fan-card-front">
+            <div class="fan-card-band fan-card-band-substack">
+              <svg class="fan-card-icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 8V21L12 17L19 21V8" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+                  <line x1="5" y1="5" x2="19" y2="5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  <line x1="5" y1="2" x2="19" y2="2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="fan-card-face fan-card-back">
+            <span class="fan-card-back-label">Substack</span>
+            <span class="fan-card-back-value">SPACED</span>
+            <span class="fan-card-back-cta">Open →</span>
+          </div>
+        </div>
+      </a>
+
+
+    </div>  
   </div>
 </section>
 
+<!-- =============================================================
+  FOOTER
+============================================================== -->
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
@@ -597,5 +759,7 @@
 </main>
 <script src="js/world-map-data.js"></script>
 <script src="js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </body>
 </html>
