@@ -1989,7 +1989,7 @@ main{
   align-items: center;
   justify-content: center;
 
-  padding: 30px;
+  padding: 30px 20px;
 
   border-radius: 50%;
 
@@ -2021,6 +2021,10 @@ main{
   color: var(--text-dim);
 
   font-size: 13.5px;
+
+  line-height: 1.5;
+
+  text-wrap: balance;
 }
 
 .founder-orb:hover .orb-photo,
@@ -3747,4 +3751,60 @@ body.album-popup-open #hover-zone {
   left: 50% !important;
   width: 2px !important;
   transform: translateX(-50%) !important;
+}
+
+.footer-roll {
+  --h: 22px;                /* height of the "cuboid" */
+  margin: 0;
+  perspective: 600px;
+  cursor: default;
+}
+
+.roll-inner {
+  display: grid;            /* both faces share one cell, so the width fits the wider one */
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--h) / -2));
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.roll-face {
+  grid-area: 1 / 1;
+  height: var(--h);
+  line-height: var(--h);
+  text-align: center;
+  white-space: nowrap;
+  backface-visibility: hidden;
+}
+
+.roll-front {
+  transform: translateZ(calc(var(--h) / 2));
+}
+
+.roll-bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
+  pointer-events: none;     /* not clickable while hidden */
+}
+
+.roll-bottom a {
+  color: #4DD9C0;
+  text-decoration: none;
+}
+
+.roll-bottom a:hover {
+  text-decoration: underline;
+}
+
+/* the roll */
+.footer-roll:hover .roll-inner,
+.footer-roll:focus-within .roll-inner {
+  transform: translateZ(calc(var(--h) / -2)) rotateX(90deg);
+}
+
+.footer-roll:hover .roll-bottom,
+.footer-roll:focus-within .roll-bottom {
+  pointer-events: auto;     /* links work once it has rolled round */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roll-inner { transition-duration: 0.01s; }
 }

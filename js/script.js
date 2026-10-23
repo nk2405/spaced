@@ -310,65 +310,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('resize', resizeCometCanvas);
 
-       // --- mouse move tracking ---
+        // --- pre-rendered glow sprite (replaces a gradient per particle per frame) ---
+    const sprite = document.createElement('canvas');
+    sprite.width = sprite.height = 64;
+    const sctx = sprite.getContext('2d');
+    const sg = sctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    sg.addColorStop(0, 'rgba(77,217,192,0.55)');
+    sg.addColorStop(0.5, 'rgba(107,79,160,0.28)');
+    sg.addColorStop(1, 'rgba(107,79,160,0)');
+    sctx.fillStyle = sg;
+    sctx.fillRect(0, 0, 64, 64);
+
+        // --- the head chases the cursor; the trail follows the head ---
+    const target = { x: mouse.x, y: mouse.y };
+    const head = { x: mouse.x, y: mouse.y };
+
     window.addEventListener('mousemove', (e) => {
-
       cometCanvas.style.opacity = '1';
+      target.x = e.clientX;
+      target.y = e.clientY;
+    });
 
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-
-      const dist = Math.hypot(mouse.x - lastMouse.x, mouse.y - lastMouse.y);
-      const steps = Math.min(Math.max(Math.floor(dist / 4), 1), 6);
-
-      for (let i = 0; i < steps; i++) {
-        const t = i / steps;
+    function spawn(x0, y0, x1, y1) {
+      const dist = Math.hypot(x1 - x0, y1 - y0);
+      const n = Math.max(Math.ceil(dist / 2), 1);
+      for (let i = 1; i <= n; i++) {
+        const t = i / n;
         particles.push({
-          x: lastMouse.x + (mouse.x - lastMouse.x) * t,
-          y: lastMouse.y + (mouse.y - lastMouse.y) * t,
+          x: x0 + (x1 - x0) * t,
+          y: y0 + (y1 - y0) * t,
           life: 1,
           r: Math.random() * 2 + 1.8
         });
       }
+    }
 
-      lastMouse = { x: mouse.x, y: mouse.y };
+    const STEP = 1 / 120;   // simulate at 120Hz regardless of real frame rate
+    const FOLLOW = 28;      // higher = head sticks closer to cursor, lower = floatier
+    let lastTime = performance.now();
+    let acc = 0;
 
-      if (particles.length > 140) {
-        particles = particles.slice(particles.length - 140);
+    function drawComet(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+      acc += dt;
+
+      // advance the head in small steps so the path is a smooth curve
+      while (acc >= STEP) {
+        acc -= STEP;
+        const px = head.x, py = head.y;
+        const k = 1 - Math.exp(-FOLLOW * STEP);
+        head.x += (target.x - head.x) * k;
+        head.y += (target.y - head.y) * k;
+        spawn(px, py, head.x, head.y);
       }
 
-    });
-
-    function drawComet() {
+      if (particles.length > 400) particles = particles.slice(particles.length - 400);
 
       cometCtx.clearRect(0, 0, cometCanvas.width, cometCanvas.height);
 
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].life -= 0.035;
-      }
-
+      for (let i = 0; i < particles.length; i++) particles[i].life -= dt * 2.1;
       particles = particles.filter(p => p.life > 0);
 
       for (const p of particles) {
-        const grad = cometCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4 * p.life + 1);
-        grad.addColorStop(0, `rgba(77,217,192,${0.55 * p.life})`);
-        grad.addColorStop(0.5, `rgba(107,79,160,${0.28 * p.life})`);
-        grad.addColorStop(1, 'rgba(107,79,160,0)');
-
-        cometCtx.beginPath();
-        cometCtx.fillStyle = grad;
-        cometCtx.arc(p.x, p.y, p.r * 4 * p.life + 1, 0, Math.PI * 2);
-        cometCtx.fill();
+        const rad = p.r * 4 * p.life + 1;
+        cometCtx.globalAlpha = p.life;
+        cometCtx.drawImage(sprite, p.x - rad, p.y - rad, rad * 2, rad * 2);
       }
+      cometCtx.globalAlpha = 1;
 
-      const headGrad = cometCtx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 9);
+      const headGrad = cometCtx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 9);
       headGrad.addColorStop(0, '#FFFFFF');
       headGrad.addColorStop(0.4, '#4DD9C0');
       headGrad.addColorStop(1, 'rgba(77,217,192,0)');
 
       cometCtx.beginPath();
       cometCtx.fillStyle = headGrad;
-      cometCtx.arc(mouse.x, mouse.y, 9, 0, Math.PI * 2);
+      cometCtx.arc(head.x, head.y, 9, 0, Math.PI * 2);
       cometCtx.fill();
 
       requestAnimationFrame(drawComet);
@@ -1000,8 +1018,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const LOCATIONS = [
     { name: 'Abu Dhabi', lat: 24.5, lon: 54.4 },
-    { name: 'Berlin', lat: 52.5, lon: 13.4 },
-    { name: 'Amsterdam', lat: 52.4, lon: 4.9 },
+    { name: 'Toronto', lat: 43.65, lon: -79.38 },
     { name: 'England', lat: 51.5, lon: -0.1 },
     { name: 'Mumbai', lat: 19.1, lon: 72.9 },
     { name: 'Delhi', lat: 28.61, lon: 77.21 },
@@ -1342,20 +1359,26 @@ openBtn.addEventListener('click', (e) => {
 });
 
   function closePopup() {
-    popupOverlay.classList.remove('is-open');
-    popupOverlay.setAttribute('aria-hidden', 'true');
-    openBtn.setAttribute('aria-expanded', 'false');
-    document.body.classList.remove('album-popup-open'); // Restores normal UI
+  if (expandedItem) collapseAlbumImage(); // put any zoomed image back first
+
+  popupOverlay.classList.remove('is-open');
+  popupOverlay.setAttribute('aria-hidden', 'true');
+  openBtn.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('album-popup-open'); // Restores normal UI
   }
 
   if (closeBtn) closeBtn.addEventListener('click', closePopup);
   if (backdrop) backdrop.addEventListener('click', closePopup);
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && popupOverlay.classList.contains('is-open')) {
-      closePopup();
-    }
-  });
+  if (e.key !== 'Escape') return;
+
+  if (expandedItem) {
+    collapseAlbumImage();   // first Escape: shrink the image back into the wall
+  } else if (popupOverlay.classList.contains('is-open')) {
+    closePopup();           // second Escape: close the wall
+  }
+});
 
 /*=========================================================================   
   ZOOM ANIMATION
@@ -2145,7 +2168,41 @@ const BLOG_CONTAINER =
     'blog-container'
   );
 
+async function fetchViaRss2Json() {
+  const res = await fetch(
+    'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(SUBSTACK_RSS)
+  );
+  if (!res.ok) throw new Error('rss2json HTTP ' + res.status);
+  const data = await res.json();
+  if (data.status && data.status !== 'ok') throw new Error('rss2json: ' + data.message);
+  if (!data.items || !data.items.length) throw new Error('rss2json: no items');
+  return data.items;
+}
 
+async function fetchViaProxy() {
+  const res = await fetch('https://substackblog.niteesh-kumar.workers.dev');
+  
+  if (!res.ok) throw new Error('proxy HTTP ' + res.status);
+  const xml = new DOMParser().parseFromString(await res.text(), 'text/xml');
+  const items = [...xml.querySelectorAll('item')].map(item => ({
+    title: item.querySelector('title')?.textContent || '',
+    link: item.querySelector('link')?.textContent || '',
+    pubDate: item.querySelector('pubDate')?.textContent || '',
+    description: item.querySelector('description')?.textContent || '',
+    thumbnail: item.querySelector('enclosure')?.getAttribute('url') || ''
+  }));
+  if (!items.length) throw new Error('proxy: no items');
+  return items;
+}
+
+async function fetchSubstackItems() {
+  try {
+    return await fetchViaProxy();      // your Worker
+  } catch (err) {
+    console.warn('Worker failed, trying rss2json:', err);
+    return await fetchViaRss2Json();
+  }
+}
 
 async function loadSubstackPosts() {
 
@@ -2161,59 +2218,8 @@ async function loadSubstackPosts() {
 
   try {
 
-    const apiURL =
-      'https://api.rss2json.com/v1/api.json?rss_url=' +
-      encodeURIComponent(
-        SUBSTACK_RSS
-      );
-
-
-
-    const response =
-      await fetch(
-        apiURL
-      );
-
-
-
-    if (
-      !response.ok
-    ) {
-
-      throw new Error(
-        'Could not load Substack feed.'
-      );
-
-    }
-
-
-
-    const data =
-      await response.json();
-
-
-
-    if (
-      !data.items ||
-      data.items.length ===
-      0
-    ) {
-
-      throw new Error(
-        'No Substack posts found.'
-      );
-
-    }
-
-
-
-    const latestPosts =
-      data.items.slice(
-        0,
-        3
-      );
-
-
+    const items = await fetchSubstackItems();
+    const latestPosts = items.slice(0, 3);
 
     BLOG_CONTAINER.innerHTML =
       latestPosts
